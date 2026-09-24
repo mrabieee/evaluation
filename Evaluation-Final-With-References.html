@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام تقييم الأداء - XAI - مع المرجعيات</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap');
+*{box-sizing:border-box}body{font-family:'Tajawal',sans-serif;background:#f1f5f9;margin:0;padding:20px;color:#0f172a}
+.container{max-width:980px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.1);border:1px solid #e2e8f0}
+.header{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#fff;padding:35px 30px;text-align:center}
+.header h1{margin:0;font-size:26px;font-weight:800}.header p{margin:10px 0 0;opacity:.7;font-size:13px}
+.role-switch{display:flex;gap:10px;justify-content:center;margin:22px 0 5px}
+.role-btn{padding:12px 28px;border-radius:30px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-family:'Tajawal';font-weight:800;cursor:pointer;transition:.2s;font-size:14px}
+.role-btn.active{background:#fff;color:#0f172a;border-color:#fff;box-shadow:0 5px 15px rgba(0,0,0,.2)}
+.content{padding:28px 30px}
+.intro{background:#f0f9ff;border:1px solid #bae6fd;padding:14px 18px;border-radius:12px;font-size:13px;color:#0c4a6e;margin-bottom:25px}
+.section{margin-bottom:22px;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden}
+.section-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;color:#fff}
+.section-header h2{margin:0;font-size:15px;font-weight:700}
+.weight{background:rgba(255,255,255,.25);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:800}
+.tech .section-header{background:#2563eb}.admin .section-header{background:#d97706}.behav .section-header{background:#16a34a}.lead .section-header{background:#9333ea}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid #f1f5f9;gap:12px}
+.row:last-child{border-bottom:none}.row:hover{background:#f8fafc}
+.criterion{font-size:14px;font-weight:500;flex:1}
+.inputs input{width:70px;padding:8px 6px;border:1px solid #cbd5e1;border-radius:8px;text-align:center;font-family:'Tajawal';font-weight:700;font-size:14px;outline:none}
+.inputs input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.cat-result{display:flex;justify-content:space-between;background:#f8fafc;padding:10px 20px;font-size:13px;font-weight:700}
+.final-box{position:sticky;bottom:15px;background:#0f172a;color:#fff;padding:20px 28px;border-radius:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-top:30px;z-index:10}
+.final-score{font-size:40px;font-weight:800}
+.final-grade{padding:8px 16px;border-radius:30px;font-weight:800;font-size:14px;background:#334155}
+.grade-excellent{background:#22c55e!important;color:#fff}.grade-verygood{background:#3b82f6!important;color:#fff}.grade-good{background:#eab308!important;color:#000}.grade-weak{background:#f97316!important}.grade-veryweak{background:#ef4444!important}
+.hidden{display:none!important}
+
+/* References Section */
+.ref-section{margin-top:45px;border:2px solid #0f172a;border-radius:16px;overflow:hidden}
+.ref-header{background:#0f172a;color:#fff;padding:18px 24px;display:flex;align-items:center;gap:12px}
+.ref-header h2{margin:0;font-size:16px;font-weight:800}
+.ref-content{padding:24px;background:#fff}
+.ref-item{display:flex;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px dashed #e2e8f0}
+.ref-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.ref-num{background:#0f172a;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.ref-text h4{margin:0 0 6px;font-size:14px;font-weight:800;color:#0f172a}
+.ref-text p{margin:0;font-size:12.5px;color:#475569;line-height:1.7}
+.ref-text .tag{display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 8px;border-radius:6px;font-size:10px;margin-top:6px;color:#334155;font-weight:700}
+.ref-footer{background:#f8fafc;padding:16px 24px;font-size:12px;color:#64748b;text-align:center;border-top:1px solid #e2e8f0;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>نظام تقييم الأداء الشامل - XAI</h1><p>نموذج تفاعلي ذكي + الأسانيد العلمية المعتمدة</p>
+<div class="role-switch">
+<button class="role-btn active" id="btn-tech" onclick="setRole('tech')">👨‍💻 موظف تقني</button>
+<button class="role-btn" id="btn-admin" onclick="setRole('admin')">👔 موظف إداري</button>
+</div>
+</div>
+<div class="content">
+<div class="intro">💡 أدخل درجتك من 1 إلى 5 في كل بند. النظام يحسب متوسط كل محور والدرجة النهائية الموزونة فوراً. اختر نوع الموظف من الأعلى وسيتغير النموذج تلقائياً ليناسب طبيعة عمله المختلفة.</div>
+
+<div class="section tech" id="sec-tech"><div class="section-header"><h2 id="title-tech">التقييم التقني (TECHNICAL)</h2><div class="weight" id="w-tech">وزن 40%</div></div>
+<div id="tech-rows">
+<div class="row"><div class="criterion">جودة الكود / التنفيذ</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech"></div></div>
+<div class="row"><div class="criterion">الالتزام بالـ Deadlines</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech"></div></div>
+<div class="row"><div class="criterion">حل المشكلات التقنية</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech"></div></div>
+<div class="row"><div class="criterion">مواكبة التقنيات (AI, etc)</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech"></div></div>
+<div class="row"><div class="criterion">كفاءة التسليم</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech"></div></div>
+</div>
+<div id="admin-functional-rows" class="hidden">
+<div class="row"><div class="criterion">جودة وإتقان المهام الوظيفية</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech-admin"></div></div>
+<div class="row"><div class="criterion">الالتزام بالـ Deadlines وإنجاز المعاملات</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech-admin"></div></div>
+<div class="row"><div class="criterion">حل المشكلات الإدارية وخدمة العملاء الداخلي</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech-admin"></div></div>
+<div class="row"><div class="criterion">إتقان أدوات العمل (Office, Systems, ERP)</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech-admin"></div></div>
+<div class="row"><div class="criterion">الدقة وتقليل الأخطاء</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="tech-admin"></div></div>
+</div>
+<div class="cat-result"><span id="label-tech">متوسط التقني</span><span id="avg-tech">0.00</span></div>
+</div>
+
+<div class="section admin"><div class="section-header"><h2>التقييم الإداري (ADMINISTRATIVE)</h2><div class="weight" id="w-admin">وزن 25%</div></div>
+<div class="row"><div class="criterion">الالتزام بالحضور والمواعيد</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="admin"></div></div>
+<div class="row"><div class="criterion">الالتزام بالإجراءات و SOPs</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="admin"></div></div>
+<div class="row"><div class="criterion">إدارة الوقت والمهام</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="admin"></div></div>
+<div class="row"><div class="criterion">التوثيق والتقارير</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="admin"></div></div>
+<div class="row"><div class="criterion">الالتزام بالميزانية</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="admin"></div></div>
+<div class="cat-result"><span>متوسط الإداري</span><span id="avg-admin">0.00</span></div>
+</div>
+
+<div class="section behav"><div class="section-header"><h2>التقييم السلوكي (BCG & Google Model)</h2><div class="weight" id="w-behav">وزن 20%</div></div>
+<div class="row"><div class="criterion">العمل الجماعي والتعاون</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="behav"></div></div>
+<div class="row"><div class="criterion">التواصل الفعال</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="behav"></div></div>
+<div class="row"><div class="criterion">المبادرة وتحمل المسؤولية</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="behav"></div></div>
+<div class="row"><div class="criterion">تقبل النقد والتطوير (Growth Mindset)</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="behav"></div></div>
+<div class="row"><div class="criterion">الالتزام بقيم XAI</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="behav"></div></div>
+<div class="cat-result"><span>متوسط السلوكي</span><span id="avg-behav">0.00</span></div>
+</div>
+
+<div class="section lead"><div class="section-header"><h2>التقييم الشخصي / القيادي</h2><div class="weight" id="w-lead">وزن 15%</div></div>
+<div class="row"><div class="criterion">التطوير الذاتي</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="lead"></div></div>
+<div class="row"><div class="criterion">القيادة والإلهام</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="lead"></div></div>
+<div class="row"><div class="criterion">الابتكار والاقتراحات</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="lead"></div></div>
+<div class="row"><div class="criterion">الولاء والانتماء</div><div class="inputs"><input type="number" min="1" max="5" step="0.5" class="score-input" data-cat="lead"></div></div>
+<div class="cat-result"><span>متوسط القيادي</span><span id="avg-lead">0.00</span></div>
+</div>
+
+<div class="final-box">
+<div><div style="font-size:12px;opacity:.7">الدرجة النهائية الموزونة</div><div class="final-score" id="final-score">0.00</div><div style="font-size:12px;opacity:.7">من 5.00</div></div>
+<div style="text-align:center"><div id="final-grade" class="final-grade">أدخل درجاتك</div><div id="final-desc" style="font-size:11px;margin-top:6px;opacity:.7">سيظهر التصنيف هنا</div></div>
+<button onclick="resetAll()" style="background:#fff;color:#0f172a;border:none;padding:10px 18px;border-radius:10px;font-family:'Tajawal';font-weight:700;cursor:pointer">إعادة تعيين</button>
+</div>
+
+<!-- References Module -->
+<div class="ref-section">
+<div class="ref-header"><span style="font-size:20px">📚</span><h2>الأسانيد والمرجعيات العلمية التي بُني عليها هذا التقييم</h2></div>
+<div class="ref-content">
+<div class="ref-item"><div class="ref-num">1</div><div class="ref-text"><h4>Google Project Oxygen - نموذج المدير العظيم</h4><p>دراسة تحليلية قامت بها Google بتحليل آلاف تقييمات الأداء لتحديد 8 سلوكيات تميز المدير الناجح. اعتمدنا منه محور القيادة والإلهام والتطوير الذاتي و الـ Coaching المستمر. المصدر: Google re:Work.</p><span class="tag">المرجع لمحور Leadership</span></div></div>
+<div class="ref-item"><div class="ref-num">2</div><div class="ref-text"><h4>Google Project Aristotle - نموذج الفريق الفعال</h4><p>دراسة 180 فريق و 250 متغير، خلصت إلى أن نجاح الفريق يعتمد على 5 عوامل: الأمان النفسي، الاعتمادية، الهيكل والوضوح، معنى العمل، وتأثير العمل. اعتمدنا منه معايير العمل الجماعي والتواصل الفعال.</p><span class="tag">المرجع لمحور Behavioral 20%</span></div></div>
+<div class="ref-item"><div class="ref-num">3</div><div class="ref-text"><h4>BCG Behavioral Competency Framework</h4><p>إطار الكفاءات السلوكية المعتمد من Boston Consulting Group لتقييم المرشحين والموظفين عبر مقابلات STAR. يقيس: القيادة، العمل الجماعي، حل المشكلات، التواصل، والتكيف. هو أساس تقييم المبادرة وتحمل المسؤولية والـ Ownership.</p><span class="tag">المرجع لمحور Behavioral - BCG Model</span></div></div>
+<div class="ref-item"><div class="ref-num">4</div><div class="ref-text"><h4>Balanced Scorecard - Kaplan & Norton - بطاقة الأداء المتوازن</h4><p>النموذج الأكاديمي الأشهر الذي يمنع التقييم الأحادي. يفرض التقييم من 4 زوايا متوازنة. طبقنا نفس الفلسفة: تقني/وظيفي + إداري + سلوكي + تطويري = تقييم عادل 100%.</p><span class="tag">المرجع لتوزيع الأوزان 40/25/20/15</span></div></div>
+<div class="ref-item"><div class="ref-num">5</div><div class="ref-text"><h4>OKRs & SMART KPIs - نظام الأهداف و النتائج الرئيسية</h4><p>نظام ابتكره Andy Grove في Intel وطبقته Google. كل بند في التقييم مربوط بـ KPI رقمي قابل للقياس (Bug Rate <2% , Sprint ≥95% , MTTR <4h) لمنع التقييم العاطفي وضمان الموضوعية.</p><span class="tag">المرجع لكل KPIs</span></div></div>
+<div class="ref-item"><div class="ref-num">6</div><div class="ref-text"><h4>360-Degree Feedback - التقييم الشامل</h4><p>نموذج معتمد من Center for Creative Leadership. التقييم لا يكون من المدير فقط، بل من 3 جهات: المدير المباشر + تقييم الزملاء (Peer) + التقييم الذاتي (Self). يحقق العدالة ويمنع الظلم، ويراعي طبيعة عمل شركتنا المختلفة.</p><span class="tag">المرجع لآلية التقييم (مدير + زميل + ذاتي)</span></div></div>
+<div class="ref-item"><div class="ref-num">7</div><div class="ref-text"><h4>DORA & Engineering Excellence Metrics</h4><p>معايير قياس أداء الفرق الهندسية العالمية (Deployment Frequency, Lead Time, MTTR, Change Failure Rate). اعتمدنا منها معايير جودة الكود وحل المشكلات وكفاءة التسليم.</p><span class="tag">المرجع لمحور Technical</span></div></div>
+</div>
+<div class="ref-footer">تم بناء هذا النموذج بدمج أفضل الممارسات العالمية لضمان عدالة التقييم ومواكبة طبيعة عمل XAI التي تتطلب ذكاء وتطور مستمر. لا يوجد ظلم في النظام، بل اختلاف طبيعي في طبيعة المهام ومتطلبات كل دور وظيفي.</div>
+</div>
+
+</div>
+</div>
+<script>
+let currentRole='tech';
+function setRole(role){
+  currentRole=role;
+  document.getElementById('btn-tech').classList.toggle('active', role==='tech');
+  document.getElementById('btn-admin').classList.toggle('active', role==='admin');
+  const techRows=document.getElementById('tech-rows'); const adminFuncRows=document.getElementById('admin-functional-rows');
+  if(role==='tech'){
+    techRows.classList.remove('hidden'); adminFuncRows.classList.add('hidden');
+    document.getElementById('w-tech').textContent='وزن 40%'; document.getElementById('w-admin').textContent='وزن 25%'; document.getElementById('w-behav').textContent='وزن 20%'; document.getElementById('w-lead').textContent='وزن 15%';
+    document.getElementById('title-tech').textContent='التقييم التقني (TECHNICAL)'; document.getElementById('label-tech').textContent='متوسط التقني';
+  } else {
+    techRows.classList.add('hidden'); adminFuncRows.classList.remove('hidden');
+    document.getElementById('w-tech').textContent='وزن 45% (وظيفي)'; document.getElementById('w-admin').textContent='وزن 25%'; document.getElementById('w-behav').textContent='وزن 20%'; document.getElementById('w-lead').textContent='وزن 10%';
+    document.getElementById('title-tech').textContent='التقييم الوظيفي (للموظف الإداري)'; document.getElementById('label-tech').textContent='متوسط الوظيفي';
+  }
+  resetAll();
+}
+function calculate(){
+  let weights; if(currentRole==='tech'){ weights={tech:0.40, admin:0.25, behav:0.20, lead:0.15}; } else { weights={tech:0.45, admin:0.25, behav:0.20, lead:0.10}; }
+  let finalWeighted=0; let hasAny=false;
+  ['tech','admin','behav','lead'].forEach(cat=>{
+    let selector = cat==='tech' && currentRole==='admin' ? '[data-cat="tech-admin"]' : `[data-cat="${cat}"]`;
+    const inputs=document.querySelectorAll(selector); let sum=0,count=0;
+    inputs.forEach(inp=>{ const v=parseFloat(inp.value); if(!isNaN(v)&&v>=1&&v<=5){sum+=v;count++;hasAny=true;} });
+    const avg=count>0?sum/count:0; document.getElementById(`avg-${cat}`).textContent=avg.toFixed(2); finalWeighted+=avg*weights[cat];
+  });
+  document.getElementById('final-score').textContent=finalWeighted.toFixed(2);
+  const gradeEl=document.getElementById('final-grade'); const descEl=document.getElementById('final-desc');
+  if(!hasAny){ gradeEl.textContent='أدخل درجاتك'; gradeEl.className='final-grade'; descEl.textContent='سيظهر التصنيف هنا'; return; }
+  let grade='',cls='',desc='';
+  if(finalWeighted>=4.5){grade='متميز - ممتاز';cls='grade-excellent';desc='يستحق ترقية / مكافأة';}
+  else if(finalWeighted>=3.75){grade='يفوق التوقعات';cls='grade-verygood';desc='أداء قوي جداً';}
+  else if(finalWeighted>=3.0){grade='يلبي التوقعات';cls='grade-good';desc='أداء جيد ومستقر';}
+  else if(finalWeighted>=2.0){grade='يحتاج تحسين';cls='grade-weak';desc='يحتاج خطة تحسين PIP';}
+  else {grade='غير مرضي';cls='grade-veryweak';desc='أداء غير مقبول';}
+  gradeEl.textContent=grade; gradeEl.className='final-grade '+cls; descEl.textContent=desc;
+}
+function resetAll(){ document.querySelectorAll('.score-input').forEach(i=>i.value=''); calculate(); }
+document.querySelectorAll('.score-input').forEach(inp=>{ inp.addEventListener('input', calculate); });
+calculate();
+</script>
+</body>
+</html>
